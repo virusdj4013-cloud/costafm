@@ -1,596 +1,141 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSTA 105 FM - Emisión en Vivo</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    },
-                    colors: {
-                        costa: {
-                            orange: '#F97316',
-                            yellow: '#FBBF24',
-                            cyan: '#06B6D4',
-                            turquoise: '#14B8A6',
-                            blue: '#0284C7',
-                            dark: '#030712',
-                            card: 'rgba(11, 19, 43, 0.85)'
-                        }
-                    },
-                    animation: {
-                        'pulse-glow': 'pulseGlow 2s infinite',
-                        'spin-slow': 'spin 14s linear infinite',
-                        'wave-pulse': 'wavePulse 1.5s ease-in-out infinite alternate',
-                    },
-                    keyframes: {
-                        pulseGlow: {
-                            '0%, 100%': { boxShadow: '0 0 20px rgba(249, 115, 22, 0.4), 0 0 35px rgba(6, 182, 212, 0.3)' },
-                            '50%': { boxShadow: '0 0 30px rgba(249, 115, 22, 0.8), 0 0 50px rgba(6, 182, 212, 0.6)' },
-                        },
-                        wavePulse: {
-                            '0%': { transform: 'scale(0.98)' },
-                            '100%': { transform: 'scale(1.02)' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <style>
-        .glass-panel {
-            background: rgba(11, 19, 43, 0.85);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(6, 182, 212, 0.2);
-        }
-        
-        .glass-button {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .glass-button:hover {
-            background: rgba(6, 182, 212, 0.15);
-            border-color: rgba(6, 182, 212, 0.4);
-            transform: translateY(-2px);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Costa 105 FM - Reproductor Ultra-Compacto</title>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --primary: #F97316;
+      --primary-hover: #EA580C;
+      --accent-yellow: #FBBF24;
+      --accent-cyan: #06B6D4;
+      --bg-dark: #0A0F1D;
+      --card-bg: rgba(15, 23, 42, 0.85);
+      --border-color: rgba(249, 115, 22, 0.25);
+    }
 
-        input[type="range"] {
-            -webkit-appearance: none;
-            appearance: none;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            outline: none;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
 
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #06B6D4;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
-            transition: all 0.2s ease;
-        }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: transparent;
+      color: #FFFFFF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px;
+    }
 
-        input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.25);
-            background: #F97316;
-            box-shadow: 0 0 12px rgba(249, 115, 22, 0.9);
-        }
+    .player-card {
+      width: 100%;
+      max-width: 360px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 12px 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 
+                  0 0 20px rgba(249, 115, 22, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
 
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(3, 7, 18, 0.5);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(6, 182, 212, 0.4);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(249, 115, 22, 0.6);
-        }
-    </style>
-</head>
-<body class="bg-[#030712] text-slate-100 min-h-screen flex items-center justify-center p-2 sm:p-4 font-sans antialiased selection:bg-cyan-500 selection:text-slate-950">
+    /* Ambient Background Glow */
+    .player-card::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -20%;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+    }
 
-    <!-- Ambient Glow Background -->
-    <div class="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-orange-500/20 to-yellow-500/15 rounded-full blur-[100px] pointer-events-none"></div>
-    <div class="fixed bottom-1/4 left-1/3 w-64 h-64 bg-gradient-to-r from-cyan-500/20 to-teal-500/15 rounded-full blur-[100px] pointer-events-none"></div>
+    .player-card::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -20%;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+    }
 
-    <!-- Main Widget Container - Ultra Compact Max Width 360px -->
-    <div class="relative w-full max-w-[360px] glass-panel rounded-2xl shadow-2xl overflow-hidden border border-cyan-500/25">
-        
-        <!-- Header: Logo Vectorial Costa 105 FM & Estado En Vivo -->
-        <div class="flex items-center justify-between px-3.5 py-2.5 border-b border-white/10 bg-slate-950/80">
-            <!-- Costa 105 FM Vector Isotype & Name -->
-            <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-slate-900 to-slate-950 border border-cyan-500/30 p-1 flex items-center justify-center shadow-md">
-                    <!-- Integrated Costa SVG Logo -->
-                    <svg viewBox="0 0 100 100" class="w-full h-full">
-                        <defs>
-                            <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#FBBF24"/>
-                                <stop offset="100%" stop-color="#F97316"/>
-                            </linearGradient>
-                            <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#22D3EE"/>
-                                <stop offset="50%" stop-color="#06B6D4"/>
-                                <stop offset="100%" stop-color="#0284C7"/>
-                            </linearGradient>
-                        </defs>
-                        <path d="M 20 50 A 30 30 0 1 1 80 50" fill="none" stroke="url(#sunGrad)" stroke-width="14" stroke-linecap="round"/>
-                        <path d="M 12 55 Q 35 40 55 60 T 90 48" fill="none" stroke="url(#waveGrad)" stroke-width="8" stroke-linecap="round"/>
-                        <path d="M 18 68 Q 38 53 58 72 T 86 63" fill="none" stroke="url(#waveGrad)" stroke-width="7" stroke-linecap="round"/>
-                        <path d="M 25 80 Q 42 68 62 82 T 80 76" fill="none" stroke="#38BDF8" stroke-width="5" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-sm font-black tracking-wider bg-gradient-to-r from-orange-400 via-yellow-300 to-cyan-400 bg-clip-text text-transparent leading-none">
-                        COSTA 105 FM
-                    </h1>
-                    <span class="text-[9px] font-semibold text-cyan-400 tracking-widest uppercase">EN VIVO 24/7</span>
-                </div>
-            </div>
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
 
-            <!-- Live Badge & Resync -->
-            <div class="flex items-center space-x-1.5">
-                <button onclick="resyncStream()" title="Re-sync Anti-delay" class="text-slate-400 hover:text-cyan-300 p-1.5 rounded-lg border border-white/5 hover:border-cyan-500/30 transition text-xs">
-                    <i id="resyncIcon" class="fa-solid fa-arrows-rotate text-[11px]"></i>
-                </button>
-                <div class="flex items-center space-x-1 bg-red-500/10 border border-red-500/30 px-2 py-0.5 rounded-full">
-                    <span class="relative flex h-1.5 w-1.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
-                    </span>
-                    <span class="text-[9px] font-black tracking-wider text-red-400 uppercase">DIRECTO</span>
-                </div>
-            </div>
-        </div>
+    .station-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+    }
 
-        <!-- Compact Body Container -->
-        <div class="p-3.5 space-y-3">
-            
-            <!-- Main Audio Control Row (Vinyl/Artwork + Info + Play) -->
-            <div class="flex items-center space-x-3">
-                <!-- Album Artwork / Vinyl Container with iTunes Cover -->
-                <div class="relative flex-shrink-0 group">
-                    <div id="vinylWrapper" class="relative w-13 h-13 rounded-xl overflow-hidden border border-cyan-500/30 shadow-md bg-slate-950 flex items-center justify-center transition-all duration-500">
-                        <!-- iTunes Artwork Image -->
-                        <img id="albumArt" src="" alt="Costa 105 FM" class="absolute inset-0 w-full h-full object-cover hidden transition-opacity duration-500 opacity-0">
-                        
-                        <!-- Fallback Isotype Vector -->
-                        <div id="artworkFallback" class="w-full h-full flex items-center justify-center bg-slate-900 p-2">
-                            <svg viewBox="0 0 100 100" class="w-full h-full">
-                                <path d="M 20 50 A 30 30 0 1 1 80 50" fill="none" stroke="url(#sunGrad)" stroke-width="14" stroke-linecap="round"/>
-                                <path d="M 12 55 Q 35 40 55 60 T 90 48" fill="none" stroke="url(#waveGrad)" stroke-width="8" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <!-- Badge indicador de iTunes -->
-                    <div id="itunesBadge" class="hidden absolute -bottom-1 -right-1 bg-slate-900 text-[8px] text-cyan-400 p-0.5 px-1 rounded border border-cyan-500/40 shadow">
-                        <i class="fa-brands fa-apple"></i>
-                    </div>
-                </div>
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #EF4444;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #EF4444;
+      animation: pulse 1.5s infinite;
+    }
 
-                <!-- Info Song & Artist -->
-                <div class="flex-1 min-w-0">
-                    <h2 id="songTitle" class="text-xs font-bold text-white truncate leading-snug">
-                        Costa 105.1 FM HD
-                    </h2>
-                    <p id="artistName" class="text-[11px] font-medium text-cyan-300 truncate">
-                        Emisión en Directo
-                    </p>
-                    <span id="albumName" class="text-[9px] text-slate-400 truncate block opacity-80">
-                        Señal Principal
-                    </span>
-                </div>
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
+    }
 
-                <!-- Play / Stop Button Compact -->
-                <div class="relative flex-shrink-0">
-                    <div id="playPulse" class="absolute -inset-1 bg-gradient-to-r from-orange-500 to-cyan-400 rounded-full blur opacity-0 transition duration-500"></div>
-                    <button id="playBtn" onclick="togglePlay()" class="relative w-11 h-11 rounded-full bg-gradient-to-r from-orange-500 via-yellow-500 to-cyan-500 text-slate-950 font-bold flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition focus:outline-none">
-                        <i id="playIcon" class="fa-solid fa-play text-base ml-0.5 text-slate-950"></i>
-                    </button>
-                </div>
-            </div>
+    .live-tag {
+      background: rgba(239, 68, 68, 0.15);
+      color: #EF4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.65rem;
+      font-weight: 800;
+    }
 
-            <!-- Mini Visualizer Canvas -->
-            <div class="w-full">
-                <canvas id="visualizer" class="w-full h-7 rounded-lg bg-slate-950/80 border border-cyan-500/15"></canvas>
-            </div>
+    /* Layout Principal Fila */
+    .main-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+    }
 
-            <!-- Live Metadata / Cabin Track Tester Toggle -->
-            <div id="metadataTester" class="hidden pt-1 pb-1 border-t border-white/5">
-                <form onsubmit="handleMetadataSubmit(event)" class="flex items-center space-x-1.5">
-                    <input id="metaInput" type="text" placeholder="Artista - Canción en vivo..." class="w-full bg-slate-900/90 border border-cyan-500/30 rounded-lg px-2 py-1 text-[10px] text-white focus:outline-none focus:border-orange-500 placeholder-slate-500">
-                    <button type="submit" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 rounded-lg px-2 py-1 text-[10px] font-semibold whitespace-nowrap">
-                        Buscar HD
-                    </button>
-                </form>
-            </div>
+    /* Carátula / Vinyl */
+    .cover-container {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      flex-shrink: 0;
+    }
 
-            <!-- Controls Row: Volume & Quick Actions -->
-            <div class="flex items-center justify-between gap-2 pt-0.5">
-                <!-- Volume Slider Block -->
-                <div class="flex items-center space-x-2 flex-1 max-w-[170px]">
-                    <button id="muteBtn" onclick="toggleMute()" class="text-slate-400 hover:text-cyan-400 transition text-xs">
-                        <i id="volumeIcon" class="fa-solid fa-volume-high"></i>
-                    </button>
-                    <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.85" oninput="changeVolume(this.value)" class="w-full h-1 cursor-pointer">
-                    <span id="volumeValue" class="text-[10px] text-slate-400 font-mono w-5 text-right">85%</span>
-                </div>
-
-                <!-- Action Buttons: Test Meta, WhatsApp & Like -->
-                <div class="flex items-center space-x-1.5 flex-shrink-0">
-                    <button onclick="toggleMetadataBar()" class="w-7 h-7 rounded-lg bg-white/5 border border-white/10 hover:border-cyan-500/40 text-slate-400 hover:text-cyan-300 flex items-center justify-center transition text-xs" title="Simular Meta de Cabina / iTunes">
-                        <i class="fa-solid fa-compact-disc"></i>
-                    </button>
-                    <button id="likeBtn" onclick="toggleLike()" class="w-7 h-7 rounded-lg bg-white/5 border border-white/10 hover:border-orange-500/40 text-slate-400 hover:text-orange-400 flex items-center justify-center transition text-xs">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                    <a href="https://wa.me/1234567890?text=Hola%20Costa%20105%20FM,%20estoy%20escuchando%20la%20radio%20en%20vivo!" target="_blank" class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 flex items-center justify-center transition text-xs" title="WhatsApp Cabina">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </a>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Toast Notification Compact -->
-    <div id="toast" class="fixed bottom-4 right-4 glass-panel px-3 py-2 rounded-xl border border-cyan-500/30 text-xs text-white shadow-xl flex items-center space-x-2 translate-y-16 opacity-0 transition-all duration-300 z-50">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-cyan-400 text-xs"></i>
-        <span id="toastMsg" class="text-[11px]">Notificación</span>
-    </div>
-
-    <!-- Audio Element -->
-    <audio id="audioPlayer" crossorigin="anonymous" preload="none"></audio>
-
-    <script>
-        // Live Audio Stream URL (Zeno.fm Icecast functional stream)
-        const liveStreamBaseUrl = "https://stream.espora.org/costafm"; 
-        
-        let isPlaying = false;
-        let isMuted = false;
-        let isLiked = false;
-        let likes = 3100;
-
-        const audio = document.getElementById('audioPlayer');
-        const playBtn = document.getElementById('playBtn');
-        const playIcon = document.getElementById('playIcon');
-        const playPulse = document.getElementById('playPulse');
-        const vinylWrapper = document.getElementById('vinylWrapper');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const volumeValue = document.getElementById('volumeValue');
-        const volumeIcon = document.getElementById('volumeIcon');
-
-        // iTunes Artwork & Metadata DOM Elements
-        const albumArt = document.getElementById('albumArt');
-        const artworkFallback = document.getElementById('artworkFallback');
-        const itunesBadge = document.getElementById('itunesBadge');
-        const songTitle = document.getElementById('songTitle');
-        const artistName = document.getElementById('artistName');
-        const albumName = document.getElementById('albumName');
-
-        let audioCtx;
-        let analyser;
-        let source;
-        let canvas = document.getElementById('visualizer');
-        let canvasCtx = canvas.getContext('2d');
-        let animId;
-
-        // Anti-Buffer & Live Sync Mechanism
-        function getLiveStreamUrl() {
-            return `${liveStreamBaseUrl}?live_sync=${Date.now()}`;
-        }
-
-        // --- iTunes API Integration ---
-        async function fetchiTunesMetadata(artist, title) {
-            const query = encodeURIComponent(`${artist} ${title}`);
-            const url = `https://itunes.apple.com/search?term=${query}&entity=song&limit=1`;
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-
-                if (data.results && data.results.length > 0) {
-                    const track = data.results[0];
-                    
-                    // High-res cover replacement (600x600px)
-                    const hdCoverUrl = track.artworkUrl100.replace('100x100bb.jpg', '600x600bb.jpg');
-
-                    // Apply iTunes Data
-                    updateTrackUI({
-                        title: track.trackName,
-                        artist: track.artistName,
-                        album: track.collectionName || 'Sencillo',
-                        coverUrl: hdCoverUrl
-                    });
-                } else {
-                    // Fallback to basic display if not found in iTunes
-                    updateTrackUI({
-                        title: title || artist,
-                        artist: title ? artist : 'Costa 105.1 FM HD',
-                        album: 'Emisión en vivo',
-                        coverUrl: null
-                    });
-                }
-            } catch (error) {
-                console.error("Error al consultar iTunes API:", error);
-                updateTrackUI({
-                    title: title || artist,
-                    artist: title ? artist : 'Costa 105.1 FM HD',
-                    album: 'Emisión en vivo',
-                    coverUrl: null
-                });
-            }
-        }
-
-        function updateTrackUI({ title, artist, album, coverUrl }) {
-            songTitle.textContent = title;
-            artistName.textContent = artist;
-            albumName.textContent = album;
-
-            if (coverUrl) {
-                albumArt.onload = function() {
-                    albumArt.classList.remove('hidden', 'opacity-0');
-                    artworkFallback.classList.add('hidden');
-                    itunesBadge.classList.remove('hidden');
-                };
-                albumArt.src = coverUrl;
-            } else {
-                albumArt.classList.add('hidden', 'opacity-0');
-                artworkFallback.classList.remove('hidden');
-                itunesBadge.classList.add('hidden');
-            }
-        }
-
-        // Toggle Live Metadata Search input
-        function toggleMetadataBar() {
-            const bar = document.getElementById('metadataTester');
-            bar.classList.toggle('hidden');
-        }
-
-        function handleMetadataSubmit(e) {
-            e.preventDefault();
-            const input = document.getElementById('metaInput');
-            const val = input.value.trim();
-            if (!val) return;
-
-            showToast("Buscando arte en iTunes HD...", "fa-apple");
-
-            if (val.includes('-')) {
-                const parts = val.split('-');
-                fetchiTunesMetadata(parts[0].trim(), parts[1].trim());
-            } else {
-                fetchiTunesMetadata(val, '');
-            }
-        }
-
-        // --- Standard Player Controls ---
-        function togglePlay() {
-            if (!audioCtx) {
-                setupWebAudio();
-            }
-
-            if (isPlaying) {
-                audio.pause();
-                audio.src = "";
-                setPlayState(false);
-            } else {
-                audio.src = getLiveStreamUrl();
-                audio.load();
-                audio.play().then(() => {
-                    setPlayState(true);
-                }).catch(err => {
-                    console.error("Error al conectar en vivo:", err);
-                    showToast("Reconectando con la emisión...", "fa-triangle-exclamation");
-                });
-            }
-        }
-
-        function resyncStream() {
-            const icon = document.getElementById('resyncIcon');
-            icon.classList.add('fa-spin');
-            
-            showToast("Sincronizando señal en directo...", "fa-arrows-rotate");
-            
-            if (isPlaying) {
-                audio.pause();
-                audio.src = getLiveStreamUrl();
-                audio.load();
-                audio.play().then(() => {
-                    setTimeout(() => icon.classList.remove('fa-spin'), 1000);
-                });
-            } else {
-                setTimeout(() => icon.classList.remove('fa-spin'), 800);
-            }
-        }
-
-        function setPlayState(playing) {
-            isPlaying = playing;
-            if (playing) {
-                playIcon.className = "fa-solid fa-stop text-base text-slate-950";
-                playPulse.classList.remove('opacity-0');
-                playPulse.classList.add('opacity-100', 'animate-pulse-glow');
-                vinylWrapper.classList.add('animate-spin-slow');
-                drawVisualizer();
-            } else {
-                playIcon.className = "fa-solid fa-play text-base ml-0.5 text-slate-950";
-                playPulse.classList.add('opacity-0');
-                playPulse.classList.remove('opacity-100', 'animate-pulse-glow');
-                vinylWrapper.classList.remove('animate-spin-slow');
-                cancelAnimationFrame(animId);
-                drawFallbackVisualizer();
-            }
-        }
-
-        function setupWebAudio() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContext();
-                analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 64;
-                source = audioCtx.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
-            } catch (e) {
-                console.warn("Web Audio API fall-back visualizer active", e);
-            }
-        }
-
-        function drawVisualizer() {
-            const width = canvas.width = canvas.offsetWidth;
-            const height = canvas.height = canvas.offsetHeight;
-
-            if (!analyser) {
-                drawFallbackVisualizer();
-                return;
-            }
-
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-
-            function renderFrame() {
-                animId = requestAnimationFrame(renderFrame);
-                analyser.getByteFrequencyData(dataArray);
-
-                canvasCtx.clearRect(0, 0, width, height);
-
-                const barWidth = (width / bufferLength) * 2.2;
-                let barHeight;
-                let x = 0;
-
-                for (let i = 0; i < bufferLength; i++) {
-                    barHeight = (dataArray[i] / 255) * height * 0.95;
-
-                    let gradient = canvasCtx.createLinearGradient(0, height, 0, 0);
-                    gradient.addColorStop(0, '#06B6D4');
-                    gradient.addColorStop(0.5, '#FBBF24');
-                    gradient.addColorStop(1, '#F97316');
-
-                    canvasCtx.fillStyle = gradient;
-                    canvasCtx.beginPath();
-                    canvasCtx.roundRect(x, height - barHeight, barWidth - 2.5, barHeight, 3);
-                    canvasCtx.fill();
-
-                    x += barWidth;
-                }
-            }
-
-            renderFrame();
-        }
-
-        function drawFallbackVisualizer() {
-            const width = canvas.width = canvas.offsetWidth;
-            const height = canvas.height = canvas.offsetHeight;
-            canvasCtx.clearRect(0, 0, width, height);
-
-            const bars = 18;
-            const barWidth = width / bars;
-            
-            for (let i = 0; i < bars; i++) {
-                canvasCtx.fillStyle = 'rgba(6, 182, 212, 0.2)';
-                canvasCtx.beginPath();
-                canvasCtx.roundRect(i * barWidth, height - 3, barWidth - 2, 3, 1.5);
-                canvasCtx.fill();
-            }
-        }
-
-        function changeVolume(val) {
-            audio.volume = val;
-            volumeValue.textContent = Math.round(val * 100) + '%';
-            
-            if (val == 0) {
-                volumeIcon.className = "fa-solid fa-volume-xmark text-xs text-red-400";
-                isMuted = true;
-            } else if (val < 0.5) {
-                volumeIcon.className = "fa-solid fa-volume-low text-xs text-cyan-400";
-                isMuted = false;
-            } else {
-                volumeIcon.className = "fa-solid fa-volume-high text-xs text-cyan-400";
-                isMuted = false;
-            }
-        }
-
-        function toggleMute() {
-            if (isMuted) {
-                audio.volume = 0.85;
-                volumeSlider.value = 0.85;
-                changeVolume(0.85);
-            } else {
-                audio.volume = 0;
-                volumeSlider.value = 0;
-                changeVolume(0);
-            }
-        }
-
-        function toggleLike() {
-            const likeBtn = document.getElementById('likeBtn');
-            
-            isLiked = !isLiked;
-            if (isLiked) {
-                likes++;
-                likeBtn.classList.add('text-orange-400', 'bg-orange-500/20', 'border-orange-500/40');
-                likeBtn.innerHTML = '<i class="fa-solid fa-heart text-xs"></i>';
-                showToast("¡Emisora guardada en tus favoritas!", "fa-heart");
-            } else {
-                likes--;
-                likeBtn.classList.remove('text-orange-400', 'bg-orange-500/20', 'border-orange-500/40');
-                likeBtn.innerHTML = '<i class="fa-regular fa-heart text-xs"></i>';
-            }
-        }
-
-        function showToast(message, iconClass = "fa-circle-check") {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            const toastIcon = document.getElementById('toastIcon');
-
-            toastMsg.textContent = message;
-            toastIcon.className = `fa-solid ${iconClass} text-cyan-400 text-xs`;
-
-            toast.classList.remove('translate-y-16', 'opacity-0');
-            
-            setTimeout(() => {
-                toast.classList.add('translate-y-16', 'opacity-0');
-            }, 3000);
-        }
-
-        window.onload = function() {
-            drawFallbackVisualizer();
-            
-            // Cargar metadata inicial de muestra mediante iTunes API
-            fetchiTunesMetadata('Dua Lipa', 'Levitating');
-
-            window.addEventListener('resize', () => {
-                if (isPlaying) {
-                    drawVisualizer();
-                } else {
-                    drawFallbackVisualizer();
-                }
-            });
-        };
-    </script>
-</body>
-</html>
+    .cover-art {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 1
