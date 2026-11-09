@@ -138,4 +138,485 @@
       border-radius: 12px;
       object-fit: cover;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 4px 1
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      background: linear-gradient(135deg, #1E293B, #0F172A);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cover-art svg {
+      width: 38px;
+      height: 38px;
+    }
+
+    .info-col {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .station-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .station-subtitle {
+      font-size: 0.75rem;
+      color: #94A3B8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Botón PLAY Gigante & Neón */
+    .play-btn-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-pulse-ring {
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.4) 0%, rgba(251, 191, 36, 0) 70%);
+      animation: neonPulse 2s infinite ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes neonPulse {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.3); opacity: 0.3; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    .btn-play {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-yellow) 0%, var(--primary) 50%, var(--primary-hover) 100%);
+      border: none;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(249, 115, 22, 0.6),
+                  inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 3;
+    }
+
+    .btn-play:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 22px rgba(249, 115, 22, 0.85);
+    }
+
+    .btn-play:active {
+      transform: scale(0.95);
+    }
+
+    /* Visualizador Spectrum en Canvas */
+    .visualizer-box {
+      width: 100%;
+      height: 22px;
+      margin-top: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Control de Volumen y Acciones */
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .volume-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      max-width: 150px;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 6px;
+      transition: color 0.2s;
+    }
+
+    .icon-btn:hover {
+      color: var(--accent-cyan);
+    }
+
+    .volume-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.15);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 6px var(--accent-cyan);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .volume-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .actions-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-whatsapp {
+      background: rgba(37, 211, 102, 0.15);
+      color: #25D366;
+      border: 1px solid rgba(37, 211, 102, 0.3);
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-whatsapp:hover {
+      background: #25D366;
+      color: #000000;
+    }
+
+    .resync-btn {
+      font-size: 0.65rem;
+      color: #94A3B8;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 3px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .resync-btn:hover {
+      color: #FFF;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="player-card">
+    <!-- Top Status Bar -->
+    <div class="top-bar">
+      <div class="station-badge">
+        <span class="live-dot"></span>
+        <span>Costa 105 FM</span>
+      </div>
+      <span class="live-tag">EN VIVO</span>
+    </div>
+
+    <!-- Main Player Layout -->
+    <div class="main-row">
+      <!-- Isotipo Costa FM Art -->
+      <div class="cover-container">
+        <div class="cover-art">
+          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="75" stroke="url(#sunGrad)" stroke-width="26"/>
+            <path d="M 30 145 C 70 100, 130 90, 175 105 C 165 145, 120 175, 75 180 Z" fill="url(#wave1)" />
+            <path d="M 25 155 C 65 110, 135 115, 175 130 C 155 170, 110 185, 65 182 Z" fill="url(#wave2)" />
+            <defs>
+              <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#F97316"/>
+                <stop offset="100%" stop-color="#FBBF24"/>
+              </linearGradient>
+              <linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#22D3EE"/>
+                <stop offset="100%" stop-color="#06B6D4"/>
+              </linearGradient>
+              <linearGradient id="wave2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#06B6D4"/>
+                <stop offset="100%" stop-color="#0284C7"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Information -->
+      <div class="info-col">
+        <div class="station-title">Costa 105 FM</div>
+        <div class="station-subtitle">Transmisión en directo</div>
+      </div>
+
+      <!-- Play Button Destacado con Anillos Neón -->
+      <div class="play-btn-wrapper">
+        <div class="play-pulse-ring" id="pulseRing"></div>
+        <button class="btn-play" id="playBtn" title="Reproducir">
+          <i data-lucide="play" id="playIcon" style="width: 24px; height: 24px; fill: currentColor; margin-left: 2px;"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Canvas Spectrum Visualizer -->
+    <div class="visualizer-box">
+      <canvas id="visualizerCanvas"></canvas>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="controls-row">
+      <div class="volume-group">
+        <button class="icon-btn" id="muteBtn" title="Silenciar">
+          <i data-lucide="volume-2" id="volumeIcon" style="width: 16px; height: 16px;"></i>
+        </button>
+        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.8">
+      </div>
+
+      <div class="actions-group">
+        <button class="resync-btn" id="resyncBtn" title="Re-sincronizar señal anti-delay">
+          <i data-lucide="refresh-cw" style="width: 10px; height: 10px;"></i>
+          <span>DIRECTO</span>
+        </button>
+
+        <a href="https://wa.me/584120000000?text=Hola%20Costa%20105%20FM,%20estoy%20escuchando%20la%20emision%20en%20vivo" target="_blank" class="btn-whatsapp">
+          <i data-lucide="message-circle" style="width: 12px; height: 12px;"></i>
+          <span>Cabina</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audioStream" preload="none" crossorigin="anonymous"></audio>
+
+  <script>
+    // Configuración oficial del stream
+    const STREAM_URL = "https://stream.espora.org/costafm";
+    
+    // Elementos del DOM
+    const audio = document.getElementById('audioStream');
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const pulseRing = document.getElementById('pulseRing');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const muteBtn = document.getElementById('muteBtn');
+    const volumeIcon = document.getElementById('volumeIcon');
+    const resyncBtn = document.getElementById('resyncBtn');
+    const canvas = document.getElementById('visualizerCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let isPlaying = false;
+    let audioCtx = null;
+    let analyser = null;
+    let dataArray = null;
+    let sourceNode = null;
+    let animId = null;
+
+    // Inicializar Iconos Lucide
+    lucide.createIcons();
+
+    // Obtener URL Anti-Delay (Añade Timestamp para evitar caché/buffer)
+    function getLiveStreamUrl() {
+      const timestamp = new Date().getTime();
+      return `${STREAM_URL}?t=${timestamp}`;
+    }
+
+    // Ajuste de Canvas responsivo
+    function resizeCanvas() {
+      canvas.width = canvas.offsetWidth * window.devicePixelRatio || 300;
+      canvas.height = canvas.offsetHeight * window.devicePixelRatio || 22;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Configuración de Web Audio API para espectro real
+    function setupWebAudio() {
+      if (audioCtx) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64;
+        
+        sourceNode = audioCtx.createMediaElementSource(audio);
+        sourceNode.connect(analyser);
+        analyser.connect(audioCtx.destination);
+
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+      } catch (e) {
+        console.warn("Web Audio API no soportado o limitado por CORS:", e);
+      }
+    }
+
+    // Renderizar espectro animado
+    function renderVisualizer() {
+      const width = canvas.width;
+      const height = canvas.height;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const barCount = 24;
+      const barWidth = (width / barCount) - 3;
+      let x = 0;
+
+      if (isPlaying && analyser && dataArray) {
+        analyser.getByteFrequencyData(dataArray);
+      }
+
+      for (let i = 0; i < barCount; i++) {
+        let barHeight = 4;
+        if (isPlaying) {
+          if (dataArray && dataArray[i]) {
+            barHeight = (dataArray[i] / 255) * height;
+          } else {
+            // Animación simulada de fallback
+            barHeight = Math.sin(Date.now() * 0.005 + i * 0.4) * (height / 2.5) + (height / 2.5);
+          }
+        }
+        barHeight = Math.max(barHeight, 3);
+
+        const gradient = ctx.createLinearGradient(0, height, 0, 0);
+        gradient.addColorStop(0, '#06B6D4');
+        gradient.addColorStop(0.5, '#F97316');
+        gradient.addColorStop(1, '#FBBF24');
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.roundRect(x, height - barHeight, barWidth, barHeight, 2);
+        ctx.fill();
+
+        x += barWidth + 3;
+      }
+
+      animId = requestAnimationFrame(renderVisualizer);
+    }
+    renderVisualizer();
+
+    // Función Toggle Play/Pause
+    function togglePlay() {
+      if (!isPlaying) {
+        audio.src = getLiveStreamUrl();
+        audio.load();
+
+        if (!audioCtx) setupWebAudio();
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        audio.play()
+          .then(() => {
+            isPlaying = true;
+            updatePlayBtnUI(true);
+          })
+          .catch(err => {
+            console.error("Error de reproducción:", err);
+            isPlaying = false;
+            updatePlayBtnUI(false);
+          });
+      } else {
+        audio.pause();
+        audio.src = ""; // Cortar conexión del stream
+        isPlaying = false;
+        updatePlayBtnUI(false);
+      }
+    }
+
+    // Actualizar interfaz del botón Play
+    function updatePlayBtnUI(playing) {
+      if (playing) {
+        playIcon.setAttribute('data-lucide', 'pause');
+        playIcon.style.marginLeft = "0px";
+        pulseRing.style.display = "none";
+      } else {
+        playIcon.setAttribute('data-lucide', 'play');
+        playIcon.style.marginLeft = "2px";
+        pulseRing.style.display = "block";
+      }
+      lucide.createIcons();
+    }
+
+    // Re-sincronización manual en directo
+    function resyncStream() {
+      if (isPlaying) {
+        audio.src = getLiveStreamUrl();
+        audio.load();
+        audio.play();
+      }
+    }
+
+    // Control de Volumen
+    volumeSlider.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      audio.volume = val;
+      audio.muted = (val === 0);
+      updateVolumeIcon(val);
+    });
+
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      if (audio.muted) {
+        volumeIcon.setAttribute('data-lucide', 'volume-x');
+      } else {
+        updateVolumeIcon(audio.volume);
+      }
+      lucide.createIcons();
+    });
+
+    function updateVolumeIcon(val) {
+      if (val === 0) {
+        volumeIcon.setAttribute('data-lucide', 'volume-x');
+      } else if (val < 0.5) {
+        volumeIcon.setAttribute('data-lucide', 'volume-1');
+      } else {
+        volumeIcon.setAttribute('data-lucide', 'volume-2');
+      }
+      lucide.createIcons();
+    }
+
+    // Event Listeners
+    playBtn.addEventListener('click', togglePlay);
+    resyncBtn.addEventListener('click', resyncStream);
+  </script>
+</body>
+</html>
